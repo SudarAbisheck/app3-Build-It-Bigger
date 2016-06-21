@@ -1,18 +1,22 @@
 package com.udacity.gradle.builditbigger;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 import me.sudar.builditbigger.androidlib.JokeDisplayActivity;
 import me.sudar.builditbigger.jokes.JokeProvider;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +48,33 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tellJoke(View view){
-        Intent intent = new Intent(this, JokeDisplayActivity.class);
-        intent.putExtra("joke", new JokeProvider().getJoke());
-        startActivity(intent);
-//        Toast.makeText(this, new JokeProvider().getJoke(), Toast.LENGTH_SHORT).show();
+        new JokeAsyncTask().execute();
     }
 
+
+    public class JokeAsyncTask extends AsyncTask<Void, Void, String>{
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                return new JokeProvider().getJoke();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(@Nullable String joke) {
+            super.onPostExecute(joke);
+            if(joke != null) {
+                Intent intent = new Intent(MainActivity.this, JokeDisplayActivity.class);
+                intent.putExtra("joke", joke);
+                startActivity(intent);
+            }else{
+                Toast.makeText(MainActivity.this, "Sorry!! Couldn't get the Joke.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 }

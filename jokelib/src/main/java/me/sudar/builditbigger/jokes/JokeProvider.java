@@ -1,8 +1,23 @@
 package me.sudar.builditbigger.jokes;
 
-public class JokeProvider {
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
-    public String getJoke(){
-        return "I am returning a joke";
+import java.io.IOException;
+
+import me.sudar.builditbigger.backend.jokeApi.JokeApi;
+
+public class JokeProvider {
+    private static JokeApi apiService = null;
+
+    public String getJoke() throws IOException {
+        if (apiService == null) {
+            JokeApi.Builder builder = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(),
+                    new AndroidJsonFactory(), null)
+                    .setRootUrl("https://build-it-bigger-udacity.appspot.com/_ah/api/");
+            apiService = builder.build();
+        }
+
+        return apiService.sayAJoke().execute().getJoke();
     }
 }
