@@ -17,3 +17,14 @@ allprojects {
         jcenter()
     }
 }
+
+task gceTestTask (dependsOn: ":backend:appengineRun") {
+    doLast {
+        println "started the server!"
+    }
+    finalizedBy "startTesting"
+}
+
+task startTesting (dependsOn : "app:connectedMockDebugAndroidTest"){
+    finalizedBy ":backend:appengineStop"
+}
