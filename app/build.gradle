@@ -14,9 +14,14 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    productFlavors{
-        mock {
+    productFlavors {
+        free {
+            applicationIdSuffix ".free"
         }
+        paid {
+            applicationIdSuffix ".paid"
+        }
+        mock
     }
 
     buildTypes {
@@ -33,12 +38,12 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.4.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':jokelib')
     compile project(':androidlib')
     // Added for AdMob
     compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.google.android.gms:play-services:9.0.2'
-
+    freeCompile 'com.google.android.gms:play-services:9.0.2'
+    mockCompile 'com.google.android.gms:play-services:9.0.2'
     compile 'com.google.code.findbugs:jsr305:2.0.1' //to resolve app-testApp conflict
 }
