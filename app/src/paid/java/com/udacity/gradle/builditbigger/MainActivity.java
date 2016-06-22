@@ -16,10 +16,16 @@ import me.sudar.builditbigger.jokes.JokeProvider;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ContentLoadingProgressBar loadingBar;
+    private Button jokeButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadingBar = (ContentLoadingProgressBar) findViewById(R.id.loading);
+        jokeButton = (Button) findViewById(R.id.jokeButton);
     }
 
 
@@ -46,10 +52,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view){
+        jokeButton.setVisibility(View.GONE);
+        loadingBar.setVisibility(View.VISIBLE);
         new JokeAsyncTask().execute();
     }
 
     public void responseHandler(String joke){
+
+        jokeButton.setVisibility(View.VISIBLE);
+        loadingBar.setVisibility(View.GONE);
+
         if(joke != null) {
             Intent intent = new Intent(MainActivity.this, JokeDisplayActivity.class);
             intent.putExtra("joke", joke);
